@@ -1,4 +1,6 @@
+import * as DataLoader from 'dataloader';
 import { URLSearchParams } from 'url';
+import fetch from 'node-fetch';
 
 const post = async (_, { id }, { getPosts }) => {
 	const response = await getPosts(`/${id}`);
@@ -13,10 +15,16 @@ const posts = async (_, { input }, { getPosts }) => {
 	return posts.json();
 };
 
-const user = async ({ userId }, _, { getUsers }) => {
-	const response = await getUsers(`/${userId}`);
-	const user = await response.json();
-	return user;
+const userDataLoader = new DataLoader(async (ids) => {
+	const urlQuery = ids.join('&id=');
+	const url = 'http://localhost:3000/users/?id=' + urlQuery;
+	const response = await fetch(url);
+	const users = await response.json();
+	return ids.map((id) => users.find((user) => user.id === id));
+});
+
+const user = async ({ userId }) => {
+	return userDataLoader.load(userId);
 };
 
 export const postResolvers = {
