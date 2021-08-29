@@ -1,16 +1,11 @@
-import { URLSearchParams } from 'url';
-
-const post = async (_, { id }, { getPosts }) => {
-	const response = await getPosts(`/${id}`);
-	const post = await response.json();
-
+const post = async (_, { id }, { dataSources }) => {
+	const post = dataSources.postApi.getPost(id);
 	return post;
 };
 
-const posts = async (_, { input }, { getPosts }) => {
-	const apiFiltersInput = new URLSearchParams(input);
-	const posts = await getPosts('/?' + apiFiltersInput);
-	return posts.json();
+const posts = async (_, { input }, { dataSources }) => {
+	const posts = dataSources.postApi.getPosts(input);
+	return posts;
 };
 
 const user = async ({ userId }, _, { userDataLoader }) => {
