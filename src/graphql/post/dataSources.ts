@@ -2,6 +2,17 @@ import { RESTDataSource } from 'apollo-datasource-rest';
 import DataLoader from 'dataloader';
 import { API_URL } from '../../config';
 import { makePostDataLoader } from './dataLoader';
+import {
+	createPostFn,
+	updatePostFn,
+	deletePostFn,
+} from './utils/post-repository';
+
+type PostData = {
+	title: string;
+	body: string;
+	userId: string;
+};
 
 export class PostsAPI extends RESTDataSource {
 	public dataLoader: DataLoader<unknown, unknown, unknown>;
@@ -12,7 +23,7 @@ export class PostsAPI extends RESTDataSource {
 		this.dataLoader = makePostDataLoader(this.getPosts.bind(this));
 	}
 
-	async getPosts(urlParams = {}) {
+	getPosts(urlParams = {}) {
 		return this.get('', urlParams, {
 			cacheOptions: {
 				ttl: 60,
@@ -20,7 +31,7 @@ export class PostsAPI extends RESTDataSource {
 		});
 	}
 
-	async getPost(id: string) {
+	getPost(id: string) {
 		return this.get(
 			id,
 			{},
@@ -30,6 +41,18 @@ export class PostsAPI extends RESTDataSource {
 				},
 			},
 		);
+	}
+
+	updatePost(postId: string, postData: PostData) {
+		return updatePostFn(postId, postData, this);
+	}
+
+	createPost(postData: PostData) {
+		return createPostFn(postData, this);
+	}
+
+	deletePost(postId: string) {
+		return deletePostFn(postId, this);
 	}
 
 	loadBatchByUserId(id: string) {

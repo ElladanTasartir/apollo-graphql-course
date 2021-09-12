@@ -12,6 +12,18 @@ const user = async ({ userId }, _, { dataSources }) => {
 	return dataSources.userApi.loadBatchById(userId);
 };
 
+const createPost = async (_, { data }, { dataSources }) => {
+	return dataSources.postApi.createPost(data);
+};
+
+const updatePost = async (_, { postId, data }, { dataSources }) => {
+	return dataSources.postApi.updatePost(postId, data);
+};
+
+const deletePost = async (_, { postId }, { dataSources }) => {
+	return dataSources.postApi.deletePost(postId);
+};
+
 export const postResolvers = {
 	Query: {
 		post,
@@ -19,5 +31,10 @@ export const postResolvers = {
 	},
 	Post: {
 		user,
+	},
+	Mutation: {
+		createPost,
+		updatePost,
+		deletePost,
 	},
 };
