@@ -12,6 +12,18 @@ const posts = async ({ id }, _, { dataSources }) => {
 	return dataSources.postApi.loadBatchByUserId(id);
 };
 
+const createUser = async (_, { data }, { dataSources }) => {
+	return dataSources.userApi.createUser(data);
+};
+
+const updateUser = async (_, { userId, data }, { dataSources }) => {
+	return dataSources.userApi.updateUser(userId, data);
+};
+
+const deleteUser = async (_, { userId }, { dataSources }) => {
+	return dataSources.userApi.deleteUser(userId);
+};
+
 export const userResolvers = {
 	Query: {
 		user,
@@ -19,5 +31,10 @@ export const userResolvers = {
 	},
 	User: {
 		posts,
+	},
+	Mutation: {
+		createUser,
+		updateUser,
+		deleteUser,
 	},
 };
